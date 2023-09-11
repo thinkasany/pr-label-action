@@ -70,7 +70,7 @@ const getTeamMembers = async payload => {
 
   const apiUrl = `https://api.github.com/orgs/${orgName}/teams/${teamName}/members`;
 
-  console.log('getTeamMembers apiUrl', apiUrl);
+  console.log("getTeamMembers apiUrl", apiUrl);
 
   const headers = {
     Authorization: `Bearer ${token}`,
@@ -89,6 +89,7 @@ const getTeamMembers = async payload => {
       return null;
     }
   } catch (error) {
+    console.log(error);
     console.error(`发生错误: ${error.message}`);
     return null;
   }

@@ -14,7 +14,7 @@ const github = require("@actions/github");
     const orgName = core.getInput("organize_name", { required: true });
     const teamName = core.getInput("team_name", { required: true });
     const isEnableSuffix = core.getInput("enable_suffix") || true;
-    const isEnableTeamLabel = core.getInput("enable_suffix") || "Core Team";
+    const isEnableTeamLabel = core.getInput("enable_suffix") || true;
     const teamLabel = core.getInput("team_label") || "Core Team";
 
     log.info(
