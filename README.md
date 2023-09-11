@@ -11,9 +11,28 @@
 
 
 ### yml配置
-**orgName**, **github_token** 必填，其他选填
 ```
+name: test-pr-listen
 
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+
+jobs:
+  checkin:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR number
+        id: pr_number
+        run: echo "PR_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
+
+      - name: Run pr-label Action
+        uses: thinkasany/pr-label-action@master
+        with:
+          github_token: ${{ secrets.GH_TOKEN }}
+          pr_number: ${{ env.PR_NUMBER }}
 ```
 ### yml demo
 
