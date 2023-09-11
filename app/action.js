@@ -102,6 +102,7 @@ const getPRCommitAuthors = async payload => {
     Accept: "application/vnd.github.v3+json",
     "User-Agent": "GitHub-PR-Commits"
   };
+  console.log('getPRCommitAuthors', apiUrl);
 
   try {
     const response = await axios.get(apiUrl, { headers });
@@ -115,6 +116,7 @@ const getPRCommitAuthors = async payload => {
       throw new Error(`无法获取提交列表: ${response.data.message}`);
     }
   } catch (error) {
+    console.log('getPRCommitAuthors err', error);
     throw new Error(`发生错误: ${error.message}`);
   }
 };
