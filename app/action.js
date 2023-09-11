@@ -64,26 +64,24 @@ const addLabelToPR = async payload => {
     });
 };
 
-// 获取仓库的所有有权限的成员
-const getAllCollaborators = async payload => {
-  const { repo, owner, token } = payload;
+// 获取指定团队下的成员列表
+const getTeamMembers = async payload => {
+  const { orgName, teamName, token } = payload;
 
-  const apiUrl = `https://api.github.com/repos/${owner}/${repo}/collaborators`;
+  const apiUrl = `https://api.github.com/orgs/${orgName}/teams/${teamName}/members`;
 
   const headers = {
     Authorization: `Bearer ${token}`,
     Accept: "application/vnd.github.v3+json",
-    "User-Agent": "GitHub-Collaborators-List"
+    "User-Agent": "GitHub-Team-Members"
   };
 
   try {
     const response = await axios.get(apiUrl, { headers });
 
     if (response.status === 200) {
-      const collaborators = response.data.map(
-        collaborator => collaborator.login
-      );
-      return collaborators;
+      const teamMembers = response.data.map(member => member.login);
+      return teamMembers;
     } else {
       console.error(`无法获取成员列表: ${response.data.message}`);
       return null;
@@ -94,17 +92,54 @@ const getAllCollaborators = async payload => {
   }
 };
 
+const getPRCommitAuthors = async payload => {
+  const { repo, owner, token, prNumber } = payload;
+
+  const apiUrl = `https://api.github.com/repos/${owner}/${repo}/pulls/${prNumber}/commits`;
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    Accept: "application/vnd.github.v3+json",
+    "User-Agent": "GitHub-PR-Commits"
+  };
+
+  try {
+    const response = await axios.get(apiUrl, { headers });
+
+    if (response.status === 200) {
+      const commitAuthors = response.data.map(
+        commit => commit.commit.author.name
+      );
+      return commitAuthors;
+    } else {
+      throw new Error(`无法获取提交列表: ${response.data.message}`);
+    }
+  } catch (error) {
+    throw new Error(`发生错误: ${error.message}`);
+  }
+};
+
 const Action = async payload => {
   const { isEnableSuffix, teamLabel, isEnableTeamLabel } = payload;
   console.log("payload", payload);
   const files = await getFilesInPR(payload);
   console.log("files", files);
-  const coreTeam = await getAllCollaborators(payload);
+  const coreTeam = await getTeamMembers(payload);
   console.log("coreTeam", coreTeam);
 
   if (isEnableTeamLabel) {
     // 是否开启功能：添加 teamLabel 的label
-    await addLabelToPR({ ...payload, files: [teamLabel] });
+    try {
+      const commitAuthors = await getPRCommitAuthors();
+      console.log("PR 中的提交者名字列表:", commitAuthors);
+      for (const author of commitAuthors) {
+        if (coreTeam.includes(author)) {
+          await addLabelToPR({ ...payload, files: [teamLabel] });
+          return;
+        }
+      }
+    } catch (error) {
+      console.error(error.message);
+    }
   }
 
   if (isEnableSuffix) {

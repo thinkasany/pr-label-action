@@ -12,6 +12,14 @@ inputs:
   pr_number:
     description: "your pr number"
     required: true
+  
+  organize_name:
+    description: "your organize name"
+    required: true
+  
+  team_name:
+    description: "your team name"
+    required: true
 
   team_label:
     description: "your team label"
