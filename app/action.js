@@ -1,6 +1,4 @@
 const axios = require("axios");
-const fs = require("fs");
-const { Octokit } = require("@octokit/core");
 
 // 使用 GitHub API 获取 PR 文件列表
 const getFilesInPR = async payload => {
@@ -68,50 +66,30 @@ const addLabelToPR = async payload => {
 const getTeamMembers = async payload => {
   const { orgName, teamName, token } = payload;
 
-  // const apiUrl = `https://api.github.com/orgs/${orgName}/teams/${teamName}/members`;
+  const apiUrl = `https://api.github.com/orgs/${orgName}/teams/${teamName}/members`;
 
-  // console.log("getTeamMembers apiUrl", apiUrl);
+  console.log("getTeamMembers apiUrl", apiUrl);
 
-  // const headers = {
-  //   Authorization: `Bearer ${token}`,
-  //   Accept: "application/vnd.github.v3+json",
-  //   "User-Agent": "GitHub-Team-Members"
-  // };
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    Accept: "application/vnd.github.v3+json",
+    "User-Agent": "GitHub-Team-Members"
+  };
 
-  // try {
-  //   const response = await axios.get(apiUrl, { headers });
-
-  //   if (response.status === 200) {
-  //     const teamMembers = response.data.map(member => member.login);
-  //     return teamMembers;
-  //   } else {
-  //     console.error(`无法获取成员列表: ${response.data.message}`);
-  //     return null;
-  //   }
-  // } catch (error) {
-  //   console.log(error);
-  //   console.error(`发生错误: ${error.message}`);
-  //   return null;
-  // }
-
-  const octokit = new Octokit({
-    auth: token
-  });
   try {
-    const teamMembers = await octokit.request(
-      "GET /orgs/{org}/teams/{team_slug}/members",
-      {
-        org: orgName,
-        team_slug: teamName
-      }
-    );
+    const response = await axios.get(apiUrl, { headers });
 
-    console.log("团队成员列表:");
-    teamMembers.data.forEach(member => {
-      console.log(member.login);
-    });
+    if (response.status === 200) {
+      const teamMembers = response.data.map(member => member.login);
+      return teamMembers;
+    } else {
+      console.error(`无法获取成员列表: ${response.data.message}`);
+      return null;
+    }
   } catch (error) {
     console.log(error);
+    console.error(`发生错误: ${error.message}`);
+    return null;
   }
 };
 
