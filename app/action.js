@@ -130,7 +130,7 @@ const Action = async payload => {
   if (isEnableTeamLabel) {
     // 是否开启功能：添加 teamLabel 的label
     try {
-      const commitAuthors = await getPRCommitAuthors();
+      const commitAuthors = await getPRCommitAuthors(payload);
       console.log("PR 中的提交者名字列表:", commitAuthors);
       for (const author of commitAuthors) {
         if (coreTeam.includes(author)) {
