@@ -11,16 +11,22 @@ const github = require("@actions/github");
     const repoName = context.repo.repo;
     const token = core.getInput("github_token", { required: true });
     const prNumber = core.getInput("pr_number", { required: true });
+    const isEnableSuffix = core.getInput("enable_suffix") || true
+    const isEnableTeamLabel = core.getInput("enable_suffix") || "Core Team"
+    const teamLabel = core.getInput("team_label") || "Core Team"
     
-    log.info(`repoName: ${repoName}; owner:${owner}; prNumber: ${prNumber}`);
+    log.info(`repoName: ${repoName}; owner:${owner}; prNumber: ${prNumber}; isEnableSuffix: ${isEnableSuffix}`);
     const payload = {
       repo: repoName,
       owner,
       token,
-      prNumber
+      prNumber,
+      isEnableSuffix,
+      isEnableTeamLabel,
+      teamLabel
     };
     await Action(payload);
-    log.info("organize-contributors Action 成功结束运行！", orgName);
+    log.info("pr-label-action Action 成功结束运行！", repoName);
   } catch (error) {
     log.setFailed("错误：", error);
   }

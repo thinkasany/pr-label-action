@@ -13,6 +13,18 @@ inputs:
     description: "your pr number"
     required: true
 
+  team_label:
+    description: "your team label"
+    default: "Core Team" 
+  
+  enable_team_label:
+    description: "enabled by default"
+    default: "true" 
+  
+  enable_suffix:
+    description: "enabled by default"
+    default: "true" 
+
 
 outputs:
   result:
