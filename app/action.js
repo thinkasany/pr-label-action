@@ -98,10 +98,13 @@ const getTeamMembers = async payload => {
     auth: token
   });
   try {
-    const teamMembers = await octokit.teams.listMembersInOrg({
-      org: orgName,
-      team_slug: teamName
-    });
+    const teamMembers = await octokit.request(
+      "GET /orgs/{org}/teams/{team_slug}/members",
+      {
+        org: orgName,
+        team_slug: teamSlug
+      }
+    );
 
     console.log("团队成员列表:");
     teamMembers.data.forEach(member => {
