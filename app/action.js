@@ -68,31 +68,45 @@ const addLabelToPR = async payload => {
 const getTeamMembers = async payload => {
   const { orgName, teamName, token } = payload;
 
-  const apiUrl = `https://api.github.com/orgs/${orgName}/teams/${teamName}/members`;
+  // const apiUrl = `https://api.github.com/orgs/${orgName}/teams/${teamName}/members`;
 
-  console.log("getTeamMembers apiUrl", apiUrl);
+  // console.log("getTeamMembers apiUrl", apiUrl);
 
-  const headers = {
-    Authorization: `Bearer ${token}`,
-    Accept: "application/vnd.github.v3+json",
-    "User-Agent": "GitHub-Team-Members"
-  };
+  // const headers = {
+  //   Authorization: `Bearer ${token}`,
+  //   Accept: "application/vnd.github.v3+json",
+  //   "User-Agent": "GitHub-Team-Members"
+  // };
 
-  try {
-    const response = await axios.get(apiUrl, { headers });
+  // try {
+  //   const response = await axios.get(apiUrl, { headers });
 
-    if (response.status === 200) {
-      const teamMembers = response.data.map(member => member.login);
-      return teamMembers;
-    } else {
-      console.error(`无法获取成员列表: ${response.data.message}`);
-      return null;
-    }
-  } catch (error) {
-    console.log(error);
-    console.error(`发生错误: ${error.message}`);
-    return null;
-  }
+  //   if (response.status === 200) {
+  //     const teamMembers = response.data.map(member => member.login);
+  //     return teamMembers;
+  //   } else {
+  //     console.error(`无法获取成员列表: ${response.data.message}`);
+  //     return null;
+  //   }
+  // } catch (error) {
+  //   console.log(error);
+  //   console.error(`发生错误: ${error.message}`);
+  //   return null;
+  // }
+
+
+  const octokit = new Octokit({
+    auth: token
+  });
+  const teamMembers = await octokit.teams.listMembersInOrg({
+    org: orgName,
+    team_slug: teamName
+  });
+  
+  console.log('团队成员列表:');
+  teamMembers.data.forEach(member => {
+    console.log(member.login);
+  });
 };
 
 const getPRCommitAuthors = async payload => {
