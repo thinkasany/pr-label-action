@@ -137,7 +137,7 @@ const Action = async payload => {
       for (const author of commitAuthors) {
         if (coreTeam.includes(author)) {
           await addLabelToPR({ ...payload, files: [teamLabel] });
-          return;
+          break;
         }
       }
     } catch (error) {
