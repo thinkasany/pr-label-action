@@ -102,7 +102,7 @@ const getTeamMembers = async payload => {
       "GET /orgs/{org}/teams/{team_slug}/members",
       {
         org: orgName,
-        team_slug: teamSlug
+        team_slug: teamName
       }
     );
 
