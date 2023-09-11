@@ -70,6 +70,8 @@ const getTeamMembers = async payload => {
 
   const apiUrl = `https://api.github.com/orgs/${orgName}/teams/${teamName}/members`;
 
+  console.log('getTeamMembers apiUrl', apiUrl);
+
   const headers = {
     Authorization: `Bearer ${token}`,
     Accept: "application/vnd.github.v3+json",
