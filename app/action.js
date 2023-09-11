@@ -94,19 +94,22 @@ const getTeamMembers = async payload => {
   //   return null;
   // }
 
-
   const octokit = new Octokit({
     auth: token
   });
-  const teamMembers = await octokit.teams.listMembersInOrg({
-    org: orgName,
-    team_slug: teamName
-  });
-  
-  console.log('团队成员列表:');
-  teamMembers.data.forEach(member => {
-    console.log(member.login);
-  });
+  try {
+    const teamMembers = await octokit.teams.listMembersInOrg({
+      org: orgName,
+      team_slug: teamName
+    });
+
+    console.log("团队成员列表:");
+    teamMembers.data.forEach(member => {
+      console.log(member.login);
+    });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 const getPRCommitAuthors = async payload => {
