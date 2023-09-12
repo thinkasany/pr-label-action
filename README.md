@@ -1,46 +1,44 @@
 # 🌊自我介绍
+pr-label自动添加工具，为您添加核心团队提交的标志和修改的文件类型...
 
+可以从的pr列表中一眼辨别哪些是核心团队开发的，和一眼看出改动了哪儿些文件...
+# 🌈实现效果
+<a href="https://github.com/doocs/leetcode/pulls?q=is%3Apr+is%3Aclosed" target="_blank"><img src="./demo/demo1.png"></a>
 
 # 🚀谁在用我
 | # | 社区| 描述 | 热度 |
 | --- | --- | --- | --- |
+| 1 | [doocs/leetcode](https://github.com/doocs/leetcode) |  LeetCode solutions in any programming language 多种编程语言实现 LeetCode、《剑指 Offer（第 2 版）》、《程序员面试金典（第 6 版）》题解 | ![](https://badgen.net/github/stars/doocs/leetcode)|
 
 
 # 🍔 使用指南
-### [示例仓库](https://github.com/thinkasany/test)
+### [示例仓库](https://github.com/doocs/leetcode/blob/main/.github/workflows/pr-add-label.yml)
 
 
 ### yml配置
 ```
-name: test-pr-listen
+name: pr-add-label
 
 on:
   pull_request:
     types:
       - opened
       - synchronize
-  workflow_dispatch: # 添加手动触发事件
-    inputs:
-      pr_number:
-        description: 'PR Number'
-        required: true
 jobs:
-  checkin:
+  add-label:
     runs-on: ubuntu-latest
     steps:
       - name: Check PR number
         id: pr_number
         run: echo "PR_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
 
-      - name: Run Custom Action
+      - name: Run add-label Action
         uses: thinkasany/pr-label-action@master
         with:
-          github_token: ${{ secrets.ACTION_TOKEN }}
+          github_token: ${{ secrets.DOOCS_BOT_ACTION_TOKEN }}
           pr_number: ${{ env.PR_NUMBER }}
-          organize_name: 'actionv' # 组织的名字
-          team_name: 'action-team' # team的名字
+          organize_name: "doocs" # 组织名字
+          team_name: "leetcode-algorithm" 团队名字
 ```
-### yml demo
 
-# 🌈实现效果
-<a href="https://thinkasany.github.io/test/" target="_blank"><img src="./demo/contributors.png"></a>
+
