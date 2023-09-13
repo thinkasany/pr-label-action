@@ -20,12 +20,14 @@ pr-label自动添加工具，为您添加核心团队提交的标志和修改的
 name: pr-add-label
 
 on:
-  pull_request:
-    types:
-      - opened
-      - synchronize
+  pull_request_target:
+    types: [opened, edited, reopened, synchronize]
+
 jobs:
   add-label:
+    permissions:
+      contents: read
+      pull-requests: write
     runs-on: ubuntu-latest
     steps:
       - name: Check PR number
@@ -37,8 +39,8 @@ jobs:
         with:
           github_token: ${{ secrets.DOOCS_BOT_ACTION_TOKEN }}
           pr_number: ${{ env.PR_NUMBER }}
-          organize_name: "doocs" # 组织名字
-          team_name: "leetcode-algorithm" 团队名字
+          organize_name: "doocs"
+          team_name: "leetcode-algorithm"
 ```
 
 
