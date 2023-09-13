@@ -34,6 +34,7 @@ const github = require("@actions/github");
     await Action(payload);
     log.info("pr-label-action Action 成功结束运行！", repoName);
   } catch (error) {
+    log.info('1. 请检查github_token的权限/是否过期 2. 检查permissions 3. 检查是否为 on pull_request_target')
     log.setFailed("错误：", error);
   }
 })();
