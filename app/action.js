@@ -93,30 +93,55 @@ const getTeamMembers = async payload => {
   }
 };
 
-const getPRCommitAuthors = async payload => {
+// const getPRCommitAuthors = async payload => {
+//   const { repo, owner, token, prNumber } = payload;
+
+//   const apiUrl = `https://api.github.com/repos/${owner}/${repo}/pulls/${prNumber}/commits`;
+//   const headers = {
+//     Authorization: `Bearer ${token}`,
+//     Accept: "application/vnd.github.v3+json",
+//     "User-Agent": "GitHub-PR-Commits"
+//   };
+//   console.log('getPRCommitAuthors', apiUrl);
+
+//   try {
+//     const response = await axios.get(apiUrl, { headers });
+
+//     if (response.status === 200) {
+//       const commitAuthors = response.data.map(
+//         commit => commit.author.login
+//       );
+//       return commitAuthors;
+//     } else {
+//       throw new Error(`无法获取提交列表: ${response.data.message}`);
+//     }
+//   } catch (error) {
+//     console.log('getPRCommitAuthors err', error);
+//     throw new Error(`发生错误: ${error.message}`);
+//   }
+// };
+
+const getPRAuthor = async payload => {
   const { repo, owner, token, prNumber } = payload;
 
-  const apiUrl = `https://api.github.com/repos/${owner}/${repo}/pulls/${prNumber}/commits`;
+  const apiUrl = `https://api.github.com/repos/${owner}/${repo}/pulls/${prNumber}`;
   const headers = {
     Authorization: `Bearer ${token}`,
-    Accept: "application/vnd.github.v3+json",
-    "User-Agent": "GitHub-PR-Commits"
+    Accept: "application/vnd.github.v3+json"
   };
-  console.log('getPRCommitAuthors', apiUrl);
+  console.log("getPRAuthor", apiUrl);
 
   try {
     const response = await axios.get(apiUrl, { headers });
 
     if (response.status === 200) {
-      const commitAuthors = response.data.map(
-        commit => commit.author.login
-      );
-      return commitAuthors;
+      const prAuthor = response.data.user.login;
+      return prAuthor;
     } else {
-      throw new Error(`无法获取提交列表: ${response.data.message}`);
+      throw new Error(`无法获取: ${response.data.message}`);
     }
   } catch (error) {
-    console.log('getPRCommitAuthors err', error);
+    console.log("getPRAuthor err", error);
     throw new Error(`发生错误: ${error.message}`);
   }
 };
@@ -132,13 +157,18 @@ const Action = async payload => {
   if (isEnableTeamLabel) {
     // 是否开启功能：添加 teamLabel 的label
     try {
-      const commitAuthors = await getPRCommitAuthors(payload);
-      console.log("PR 中的提交者名字列表:", commitAuthors);
-      for (const author of commitAuthors) {
-        if (coreTeam.includes(author)) {
-          await addLabelToPR({ ...payload, files: [teamLabel] });
-          break;
-        }
+      // const commitAuthors = await getPRCommitAuthors(payload);
+      // console.log("PR 中的提交者名字列表:", commitAuthors);
+      // for (const author of commitAuthors) {
+      //   if (coreTeam.includes(author)) {
+      //     await addLabelToPR({ ...payload, files: [teamLabel] });
+      //     break;
+      //   }
+      // }
+      const prAuthor = await getPRAuthor(payload);
+      console.log("PR 提交者:", prAuthor);
+      if (coreTeam.includes(prAuthor)) {
+        await addLabelToPR({ ...payload, files: [teamLabel] });
       }
     } catch (error) {
       console.error(error.message);
