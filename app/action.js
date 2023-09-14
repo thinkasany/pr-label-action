@@ -165,9 +165,11 @@ const Action = async payload => {
       //     break;
       //   }
       // }
-      const prAuthor = await getPRAuthor();
-      await addLabelToPR({ ...payload, files: [teamLabel] })
+      const prAuthor = await getPRAuthor(payload);
       console.log("PR 提交者:", prAuthor);
+      if (coreTeam.includes(prAuthor)) {
+        await addLabelToPR({ ...payload, files: [teamLabel] });
+      }
     } catch (error) {
       console.error(error.message);
     }
