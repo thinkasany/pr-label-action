@@ -109,7 +109,7 @@ const getPRCommitAuthors = async payload => {
 
     if (response.status === 200) {
       const commitAuthors = response.data.map(
-        commit => commit.commit.author.name
+        commit => commit.author.login
       );
       return commitAuthors;
     } else {
